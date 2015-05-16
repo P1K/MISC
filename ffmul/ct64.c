@@ -2,7 +2,7 @@
 /// (I.e. multiplication by a constant in F_{2^128})
 /// Just for fun
 /// W/o. SSE
-/// But not fast compared to w. (cf. e.g. Käsper & Schwave, CHES2009)
+/// But not fast compared to w. (cf. e.g. Käsper & Schwabe, CHES2009)
 ///
 /// PK 2015
 
