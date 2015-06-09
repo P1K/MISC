@@ -22,7 +22,7 @@ def main():
 	args 	= [prog]
 	for i in range(len(sys.argv) - 3):
 		args.append(sys.argv[i + 3])
-		sprog += " "+sys.argv[i + 3] 
+		sprog += " "+sys.argv[i + 3]
 	child = os.fork()
 	startime = time.time()
 	if (child == 0):
