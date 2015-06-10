@@ -26,8 +26,16 @@ def main():
 	child = os.fork()
 	startime = time.time()
 	if (child == 0):
-		os.execvp(prog, args)
-	time.sleep(timeout)
+		try:
+			os.execvp(prog, args)
+		except FileNotFoundError:
+			print("Unknown program "+prog)
+			os.killpg(os.getpgid(0), signal.SIGKILL)
+	try:
+		time.sleep(timeout)
+	except ValueError:
+		print("Unrecognized timeout (must be positive)", file=sys.stderr)
+		os.killpg(os.getpgid(child), signal.SIGKILL)
 	timelapse = time.time() - startime
 	print("\nkilling "+sprog+" after "+str(round(timelapse,2))+" seconds")
 	os.killpg(os.getpgid(child), signal.SIGKILL)
