@@ -1,4 +1,9 @@
 #! /usr/local/bin/python3
+#
+# PK 2015
+
+# For some older pythons
+from __future__ import print_function
 
 import sys
 import os
