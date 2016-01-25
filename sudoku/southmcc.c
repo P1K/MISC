@@ -1,8 +1,7 @@
-#include <stdio.h>
 #define E(x) q[18+(x/27)+((x%9)/3)*3]
 #define H(x) q[x/9]|=1<<t[x];q[9+x%9]|=1<<t[x];E(x)|=1<<t[x]
-int main(){
-  int t[81],q[27],a[81],v[81],i,j,k,l=-1,m=0,n=0;
+main(){
+  int t[81],q[27],a[81],v[81],i,j,k,l=-1,m,n;
   for(i=0;i<81;i++){scanf("%d",t+i);a[i]=0;v[i]=0;}
 I:for(i=0;i<27;i++)q[i]=0;for(i=0;i<81;i++){if(t[i])H(i);}
   if(n){n=0;goto K;}k=-1;m=0;for(i=0;i<81;i++){if(!t[i]){m++;a[i]=0;
