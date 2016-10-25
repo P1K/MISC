@@ -2,7 +2,7 @@
  * AES-128 Encryption
  * Byte-Oriented
  * On-the-fly key schedule
- * Compressed table-based XTIME
+ * Constant-time XTIME
  *
  * Pierre Karpman, 2016-04
  */
@@ -36,17 +36,19 @@ static const uint8_t S[256] =
 };
 
 /*
- * Table-based multiplication by $a$ in $F_2[a]/a^8 + a^4 + a^3 + a + 1$
- * Compressed in two tables, one for each nibble
- * First row = left shift across the byte
- * Second row= left shift + reduction across the byte
+ * Constant-time ``broadcast-based'' multiplication by
+ * $a$ in $F_2[a]/a^8 + a^4 + a^3 + a + 1$
  */
-static const uint8_t xtime_part[32] =
+uint8_t xtime(uint8_t x)
 {
-	0x00, 0x02, 0x04, 0x06, 0x08, 0x0A, 0x0C, 0x0E, 0x10, 0x12, 0x14, 0x16, 0x18, 0x1A, 0x1C, 0x1E,
-	0x00, 0x20, 0x40, 0x60, 0x80, 0xA0, 0xC0, 0xE0, 0x1B, 0x3B, 0x5B, 0x7B, 0x9B, 0xBB, 0xDB, 0xFB
-};
-#define XTIME(x) (xtime_part[(x) & 0xF] ^ (xtime_part + 16)[(x) >> 4])
+	uint8_t m = x >> 7;
+
+	m ^= 1;
+	m -= 1;
+	m &= 0x1B;
+
+	return ((x << 1) ^ m);
+}
 
 static const uint8_t RC[10] = {0x01, 0x02, 0x04, 0x08, 0x10, 0x20, 0x40, 0x80, 0x1B, 0x36};
 
@@ -92,10 +94,10 @@ void aes_round(uint8_t block[AES_BLOCK_SIZE], uint8_t round_key[AES_BLOCK_SIZE],
 		uint8_t tmp2 = column[0];
 		tmp = column[0] ^ column[1] ^ column[2] ^ column[3];
 
-		column[0] ^= tmp ^ XTIME(column[0] ^ column[1]);
-		column[1] ^= tmp ^ XTIME(column[1] ^ column[2]);
-		column[2] ^= tmp ^ XTIME(column[2] ^ column[3]);
-		column[3] ^= tmp ^ XTIME(column[3] ^ tmp2);
+		column[0] ^= tmp ^ xtime(column[0] ^ column[1]);
+		column[1] ^= tmp ^ xtime(column[1] ^ column[2]);
+		column[2] ^= tmp ^ xtime(column[2] ^ column[3]);
+		column[3] ^= tmp ^ xtime(column[3] ^ tmp2);
 	}
 
 	/*
@@ -129,8 +131,8 @@ void aes128_enc(uint8_t block[AES_BLOCK_SIZE], const uint8_t key[AES_128_KEY_SIZ
 
 	for (i = 0; i < 16; i++)
 	{
-		block[i] ^= key[0];
-		ekey[i]   = key[0];
+		block[i] ^= key[i];
+		ekey[i]   = key[i];
 	}
 	next_aes128_round_key(ekey, ekey + 16, 0);
 
