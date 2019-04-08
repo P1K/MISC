@@ -6,8 +6,6 @@
  * Pierre Karpman, 2017-09
  */
 
-#include <stdio.h>
-#include <stdint.h>
 #include "tczero.h"
 
 #define MASK ((HALF_BLOCK_SIZE == 64) ? ~0ull : (1ull << (HALF_BLOCK_SIZE)) - 1)

@@ -1,6 +1,8 @@
 #ifndef __TCZERO_H
 #define __TCZERO_H
 
+#include <stdint.h>
+
 
 #define HALF_BLOCK_SIZE 64 /* Half of the block size; valid values are 1 <= m <= 64 */
 #define RN2 64 /* Number of rounds/2; valid values are 1 <= r <= 64 (for 8-blocks, a value of ~40+ is necessary for good statistical behaviour) */
